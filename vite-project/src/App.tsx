@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, type ChangeEvent } from 'react';
+import React, { useState, useEffect, useMemo, type ChangeEvent } from "react";
 
 // --- 1. DEFINICIONES DE TIPOS (TypeScript) ---
 
@@ -32,7 +32,7 @@ type CartItem = {
 };
 
 // Tipo de pedido (US-2)
-type OrderType = 'dine-in' | 'takeaway';
+type OrderType = "dine-in" | "takeaway";
 
 // Pedido confirmado
 type Order = {
@@ -41,7 +41,7 @@ type Order = {
   customerName: string;
   items: CartItem[];
   total: number;
-  status: 'pending' | 'completed'; // Para el panel de personal (US-3)
+  status: "pending" | "completed"; // Para el panel de personal (US-3)
   orderType: OrderType;
   createdAt: Date;
   receiptNumber: string; // Comprobante digital ("Done")
@@ -53,88 +53,93 @@ type User = {
   email: string;
   password: string; // En un app real, esto sería un hash
   name: string;
-  role: 'client' | 'staff' | 'admin';
+  role: "client" | "staff" | "admin";
 };
 
 // Páginas para navegación sin router
 type Page =
-  | 'login'
-  | 'register'
-  | 'menu'
-  | 'cart'
-  | 'history'
-  | 'staffPanel'
-  | 'adminPanel'
-  | 'adminProducts';
+  | "login"
+  | "register"
+  | "menu"
+  | "cart"
+  | "history"
+  | "staffPanel"
+  | "adminPanel"
+  | "adminProducts";
 
 type Notification = {
   message: string;
-  type: 'success' | 'error' | 'info';
+  type: "success" | "error" | "info";
 } | null;
 
 // --- 2. DATOS SIMULADOS (MOCK DATA) ---
 
 const MOCK_EXTRAS: Extra[] = [
-  { id: 'e1', name: 'Leche de Almendras', price: 0 },
-  { id: 'e2', name: 'Leche Deslactosada', price: 0 },
-  { id: 'e3', name: 'Sirope de Caramelo', price: 0 },
-  { id: 'e4', name: 'Crema Batida', price: 0 },
-  { id: 'e5', name: 'Sin Cebolla', price: 0 },
-  { id: 'e6', name: 'Queso Extra', price: 0 },
+  { id: "e1", name: "Leche de Almendras", price: 0 },
+  { id: "e2", name: "Leche Deslactosada", price: 0 },
+  { id: "e3", name: "Sirope de Caramelo", price: 0 },
+  { id: "e4", name: "Crema Batida", price: 0 },
+  { id: "e5", name: "Sin Cebolla", price: 0 },
+  { id: "e6", name: "Queso Extra", price: 0 },
 ];
 
 const MOCK_PRODUCTS: Product[] = [
   {
-    id: 'p1',
-    name: 'Café Espresso',
-    description: 'Café corto e intenso, la base de todo.',
-    price: 2.5,
-    imageUrl: 'https://placehold.co/600x400/D29961/FFF?text=Espresso',
-    category: 'Bebidas',
+    id: "p1",
+    name: "Café Espresso",
+    description: "Café corto e intenso, la base de todo.",
+    price: 3100,
+    imageUrl: "expreso.webp",
+    category: "Bebidas",
     prepTime: 3,
     available: true,
     allowedExtras: [MOCK_EXTRAS[1]],
   },
   {
-    id: 'p2',
-    name: 'Café Latte',
-    description: 'Espresso suave con leche vaporizada.',
-    price: 3.5,
-    imageUrl: 'https://placehold.co/600x400/A56A49/FFF?text=Latte',
-    category: 'Bebidas',
+    id: "p2",
+    name: "Café Latte",
+    description: "Espresso suave con leche vaporizada.",
+    price: 3700,
+    imageUrl: "latte.jpg",
+    category: "Bebidas",
     prepTime: 5,
     available: true,
-    allowedExtras: [MOCK_EXTRAS[0], MOCK_EXTRAS[1], MOCK_EXTRAS[2], MOCK_EXTRAS[3]],
+    allowedExtras: [
+      MOCK_EXTRAS[0],
+      MOCK_EXTRAS[1],
+      MOCK_EXTRAS[2],
+      MOCK_EXTRAS[3],
+    ],
   },
   {
-    id: 'p3',
-    name: 'Croissant de Mantequilla',
-    description: 'Hojaldre crujiente y tierno.',
-    price: 2.0,
-    imageUrl: 'https://placehold.co/600x400/E8B478/FFF?text=Croissant',
-    category: 'Pastelería',
+    id: "p3",
+    name: "Croissant",
+    description: "Hojaldre crujiente y tierno.",
+    price: 2900,
+    imageUrl: "croissant.jpg",
+    category: "Pastelería",
     prepTime: 1,
     available: true,
     allowedExtras: [],
   },
   {
-    id: 'p4',
-    name: 'Sándwich de Jamón y Queso',
-    description: 'Clásico sándwich tostado.',
-    price: 4.5,
-    imageUrl: 'https://placehold.co/600x400/F0A868/FFF?text=Sandwich',
-    category: 'Comida',
+    id: "p4",
+    name: "Sándwich de Jamón y Queso",
+    description: "Clásico sándwich tostado.",
+    price: 4500,
+    imageUrl: "sandwich.jpg",
+    category: "Comida",
     prepTime: 8,
     available: true,
     allowedExtras: [MOCK_EXTRAS[4], MOCK_EXTRAS[5]],
   },
   {
-    id: 'p5',
-    name: 'Jugo de Naranja',
-    description: 'Recién exprimido, 100% natural.',
-    price: 3.0,
-    imageUrl: 'https://placehold.co/600x400/FFA500/FFF?text=Jugo',
-    category: 'Bebidas',
+    id: "p5",
+    name: "Jugo de Naranja",
+    description: "Recién exprimido, 100% natural.",
+    price: 2000,
+    imageUrl: "jugo-naranja.jpg",
+    category: "Bebidas",
     prepTime: 4,
     available: false, // US-1: Indicador de no disponible
     allowedExtras: [],
@@ -143,25 +148,25 @@ const MOCK_PRODUCTS: Product[] = [
 
 const MOCK_USERS: User[] = [
   {
-    id: 'u1',
-    email: 'cliente@mail.com',
-    password: '123',
-    name: 'Juan Cliente',
-    role: 'client',
+    id: "u1",
+    email: "cliente@mail.com",
+    password: "123",
+    name: "Juan Cliente",
+    role: "client",
   },
   {
-    id: 'u2',
-    email: 'personal@mail.com',
-    password: '123',
-    name: 'Ana Personal',
-    role: 'staff',
+    id: "u2",
+    email: "personal@mail.com",
+    password: "123",
+    name: "Ana Personal",
+    role: "staff",
   },
   {
-    id: 'u3',
-    email: 'admin@mail.com',
-    password: '123',
-    name: 'Gerente Admin',
-    role: 'admin',
+    id: "u3",
+    email: "admin@mail.com",
+    password: "123",
+    name: "Gerente Admin",
+    role: "admin",
   },
 ];
 
@@ -170,7 +175,7 @@ const MOCK_USERS: User[] = [
 // Icono genérico para simplificar
 const Icon: React.FC<{ path: string; className?: string }> = ({
   path,
-  className = 'w-6 h-6',
+  className = "w-6 h-6",
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -218,10 +223,22 @@ const IconArchive = () => (
   <Icon path="m21 8-1.4-4.2c-.1-.5-.6-.8-1.1-.8H5.5c-.5 0-1 .3-1.1.8L3 8m18 0H3v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" />
 );
 const IconCheck = () => <Icon path="M20 6 9 17l-5-5" />;
-const IconDollarSign = () => <Icon path="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />;
-const IconUpload = () => <Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5-5 5 5M12 5v12" />;
+const IconDollarSign = () => (
+  <Icon path="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+);
+const IconUpload = () => (
+  <Icon path="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5-5 5 5M12 5v12" />
+);
 
 // --- 4. COMPONENTES DE UI Y UTILIDADES ---
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 2,
+  }).format(price);
+}
 
 /**
  * Componente genérico de Modal
@@ -270,11 +287,11 @@ const NotificationDisplay: React.FC<{ notification: Notification }> = ({
   if (!notification) return null;
 
   const baseClasses =
-    'fixed bottom-5 right-5 z-50 px-6 py-4 rounded-lg shadow-xl text-white transition-all duration-300';
+    "fixed bottom-5 right-5 z-50 px-6 py-4 rounded-lg shadow-xl text-white transition-all duration-300";
   const typeClasses = {
-    success: 'bg-green-600',
-    error: 'bg-red-600',
-    info: 'bg-blue-600',
+    success: "bg-green-600",
+    error: "bg-red-600",
+    info: "bg-blue-600",
   };
 
   return (
@@ -324,32 +341,26 @@ const Header: React.FC<HeaderProps> = ({
           {/* Logo */}
           <div
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => onNavigate('menu')}
+            onClick={() => onNavigate("menu")}
           >
             <span className="text-2xl text-amber-700">
               <IconCoffee />
             </span>
-            <span className="text-xl font-bold text-amber-950">
-              MiCafé App
-            </span>
+            <span className="text-xl font-bold text-amber-950">MiCafé App</span>
           </div>
 
           {/* Navegación basada en Rol */}
           <nav className="flex items-center gap-2 sm:gap-4">
-            {currentUser.role === 'client' && (
+            {currentUser.role === "client" && (
               <>
-                <NavButton
-                  page="menu"
-                  icon={<IconCoffee />}
-                  label="Menú"
-                />
+                <NavButton page="menu" icon={<IconCoffee />} label="Menú" />
                 <NavButton
                   page="history"
                   icon={<IconHistory />}
                   label="Historial"
                 />
                 <button
-                  onClick={() => onNavigate('cart')}
+                  onClick={() => onNavigate("cart")}
                   className="relative flex flex-col items-center p-2 text-stone-600 hover:text-amber-700 transition-colors rounded-lg hover:bg-amber-50"
                 >
                   <IconShoppingCart />
@@ -363,7 +374,7 @@ const Header: React.FC<HeaderProps> = ({
               </>
             )}
 
-            {currentUser.role === 'staff' && (
+            {currentUser.role === "staff" && (
               <NavButton
                 page="staffPanel"
                 icon={<IconClipboard />}
@@ -371,7 +382,7 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
 
-            {currentUser.role === 'admin' && (
+            {currentUser.role === "admin" && (
               <>
                 <NavButton
                   page="adminPanel"
@@ -410,8 +421,8 @@ interface LoginProps {
   error: string | null;
 }
 const LoginPage: React.FC<LoginProps> = ({ onLogin, onNavigate, error }) => {
-  const [email, setEmail] = useState('cliente@mail.com');
-  const [password, setPassword] = useState('123');
+  const [email, setEmail] = useState("cliente@mail.com");
+  const [password, setPassword] = useState("123");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -483,9 +494,9 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin, onNavigate, error }) => {
         </form>
 
         <p className="text-sm text-center text-stone-600">
-          ¿No tienes cuenta?{' '}
+          ¿No tienes cuenta?{" "}
           <button
-            onClick={() => onNavigate('register')}
+            onClick={() => onNavigate("register")}
             className="font-medium text-amber-700 hover:underline"
           >
             Regístrate aquí
@@ -516,9 +527,9 @@ const RegisterPage: React.FC<RegisterProps> = ({
   onNavigate,
   error,
 }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -596,9 +607,9 @@ const RegisterPage: React.FC<RegisterProps> = ({
           </button>
         </form>
         <p className="text-sm text-center text-stone-600">
-          ¿Ya tienes cuenta?{' '}
+          ¿Ya tienes cuenta?{" "}
           <button
-            onClick={() => onNavigate('login')}
+            onClick={() => onNavigate("login")}
             className="font-medium text-amber-700 hover:underline"
           >
             Ingresa aquí
@@ -626,7 +637,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           className="object-cover w-full h-48"
           onError={(e) =>
             (e.currentTarget.src =
-              'https://placehold.co/600x400/CCCCCC/FFF?text=Error')
+              "https://placehold.co/600x400/CCCCCC/FFF?text=Error")
           }
         />
         {/* US-1: Indicador de no disponible */}
@@ -648,16 +659,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           {product.description}
         </p>
         <div className="flex items-center justify-between mt-4">
-          {/* US-1: Precio */}
+          {}
           <span className="text-xl font-bold text-amber-800">
-            ${product.price.toFixed(2)}
+            {formatPrice(product.price)}
           </span>
           <button
             onClick={onAddToCart}
             disabled={!product.available}
             className="px-4 py-2 text-sm font-semibold text-white bg-amber-700 rounded-lg shadow-md hover:bg-amber-800 transition-colors disabled:bg-stone-300 disabled:cursor-not-allowed"
           >
-            {product.allowedExtras.length > 0 ? 'Personalizar' : 'Agregar'}
+            {product.allowedExtras.length > 0 ? "Personalizar" : "Agregar"}
           </button>
         </div>
       </div>
@@ -675,7 +686,7 @@ interface ProductModalProps {
   onAddToCart: (
     product: Product,
     quantity: number,
-    selectedExtras: Extra[]
+    selectedExtras: Extra[],
   ) => void;
 }
 const ProductModal: React.FC<ProductModalProps> = ({
@@ -701,7 +712,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
     setSelectedExtras((prev) =>
       prev.find((e) => e.id === extra.id)
         ? prev.filter((e) => e.id !== extra.id)
-        : [...prev, extra]
+        : [...prev, extra],
     );
   };
 
@@ -712,7 +723,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   // US-2: "se actualice automáticamente el precio total"
   // En este MVP, el precio de los extras es 0, pero la lógica está lista.
-  const totalPrice = (product.price + selectedExtras.reduce((sum, e) => sum + e.price, 0)) * quantity;
+  const totalPrice =
+    (product.price + selectedExtras.reduce((sum, e) => sum + e.price, 0)) *
+    quantity;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={product.name}>
@@ -743,7 +756,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 />
                 <span className="text-stone-700">{extra.name}</span>
                 <span className="ml-auto text-sm font-medium text-stone-500">
-                  +${extra.price.toFixed(2)}
+                  {formatPrice(extra.price)}
                 </span>
               </label>
             ))}
@@ -752,9 +765,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* US-2: Elegir cantidades */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold text-amber-950">
-            Cantidad
-          </span>
+          <span className="text-lg font-semibold text-amber-950">Cantidad</span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -777,7 +788,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
         {/* Footer del Modal */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-stone-200">
           <span className="text-2xl font-bold text-amber-950">
-            Total: ${totalPrice.toFixed(2)}
+            Total:{" "}
+            {new Intl.NumberFormat("es-AR", {
+              style: "currency",
+              currency: "ARS",
+              minimumFractionDigits: 2,
+            }).format(totalPrice)}
           </span>
           <button
             onClick={handleAddToCart}
@@ -799,25 +815,25 @@ interface MenuProps {
   onAddToCart: (
     product: Product,
     quantity: number,
-    selectedExtras: Extra[]
+    selectedExtras: Extra[],
   ) => void;
 }
 const MenuPage: React.FC<MenuProps> = ({ products, onAddToCart }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [modalProduct, setModalProduct] = useState<Product | null>(null);
 
   const categories = useMemo(
-    () => ['Todos', ...new Set(products.map((p) => p.category))],
-    [products]
+    () => ["Todos", ...new Set(products.map((p) => p.category))],
+    [products],
   );
 
   // US-1: Filtrar y buscar productos
   const filteredProducts = useMemo(() => {
     return products.filter(
       (p) =>
-        (selectedCategory === 'Todos' || p.category === selectedCategory) &&
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        (selectedCategory === "Todos" || p.category === selectedCategory) &&
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [products, searchTerm, selectedCategory]);
 
@@ -835,7 +851,9 @@ const MenuPage: React.FC<MenuProps> = ({ products, onAddToCart }) => {
       <div className="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         {/* Encabezado y Filtros */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-amber-950 mb-2">Nuestro Menú</h1>
+          <h1 className="text-4xl font-bold text-amber-950 mb-2">
+            Nuestro Menú
+          </h1>
           <p className="text-lg text-stone-600">
             Elige tus favoritos y haz tu pedido.
           </p>
@@ -906,13 +924,13 @@ const CartPage: React.FC<CartProps> = ({
   onRemoveItem,
   onPlaceOrder,
 }) => {
-  const [orderType, setOrderType] = useState<OrderType>('takeaway');
+  const [orderType, setOrderType] = useState<OrderType>("takeaway");
 
   const cartTotal = useMemo(() => {
     return cart.reduce((total, item) => {
       const extrasTotal = item.selectedExtras.reduce(
         (sum, e) => sum + e.price,
-        0
+        0,
       );
       return total + (item.product.price + extrasTotal) * item.quantity;
     }, 0);
@@ -954,19 +972,17 @@ const CartPage: React.FC<CartProps> = ({
                   {/* US-2: Mostrar extras seleccionados */}
                   {item.selectedExtras.length > 0 && (
                     <p className="text-sm text-stone-500">
-                      Extras:{' '}
-                      {item.selectedExtras.map((e) => e.name).join(', ')}
+                      Extras:{" "}
+                      {item.selectedExtras.map((e) => e.name).join(", ")}
                     </p>
                   )}
                   <span className="text-md font-semibold text-amber-800">
-                    ${item.product.price.toFixed(2)}
+                    {formatPrice(item.product.price)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() =>
-                      onUpdateQuantity(item.id, item.quantity - 1)
-                    }
+                    onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                     className="flex items-center justify-center w-8 h-8 text-amber-700 bg-amber-100 rounded-full hover:bg-amber-200 transition-colors"
                   >
                     <IconMinus />
@@ -975,9 +991,7 @@ const CartPage: React.FC<CartProps> = ({
                     {item.quantity}
                   </span>
                   <button
-                    onClick={() =>
-                      onUpdateQuantity(item.id, item.quantity + 1)
-                    }
+                    onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                     className="flex items-center justify-center w-8 h-8 text-amber-700 bg-amber-100 rounded-full hover:bg-amber-200 transition-colors"
                   >
                     <IconPlus />
@@ -1010,8 +1024,8 @@ const CartPage: React.FC<CartProps> = ({
                     type="radio"
                     name="orderType"
                     value="dine-in"
-                    checked={orderType === 'dine-in'}
-                    onChange={() => setOrderType('dine-in')}
+                    checked={orderType === "dine-in"}
+                    onChange={() => setOrderType("dine-in")}
                     className="w-5 h-5 text-amber-600 focus:ring-amber-500"
                   />
                   <span className="text-stone-700">Consumir en Mesa</span>
@@ -1021,8 +1035,8 @@ const CartPage: React.FC<CartProps> = ({
                     type="radio"
                     name="orderType"
                     value="takeaway"
-                    checked={orderType === 'takeaway'}
-                    onChange={() => setOrderType('takeaway')}
+                    checked={orderType === "takeaway"}
+                    onChange={() => setOrderType("takeaway")}
                     className="w-5 h-5 text-amber-600 focus:ring-amber-500"
                   />
                   <span className="text-stone-700">Para Llevar</span>
@@ -1033,7 +1047,7 @@ const CartPage: React.FC<CartProps> = ({
                 <span>Total:</span>
                 {/* US-2: Precio total actualizado */}
                 <span className="text-2xl font-bold">
-                  ${cartTotal.toFixed(2)}
+                  {formatPrice(cartTotal)}
                 </span>
               </div>
 
@@ -1093,42 +1107,42 @@ const OrderHistoryPage: React.FC<HistoryProps> = ({
       ) : (
         <div className="space-y-6">
           {userOrders.map((order) => (
-            <div
-              key={order.id}
-              className="p-6 bg-white rounded-2xl shadow-md"
-            >
+            <div key={order.id} className="p-6 bg-white rounded-2xl shadow-md">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4 pb-4 border-b border-stone-200">
                 <div>
                   <h2 className="text-xl font-semibold text-amber-950">
                     Pedido #{order.receiptNumber}
                   </h2>
                   <p className="text-sm text-stone-500">
-                    {order.createdAt.toLocaleString()} -{' '}
+                    {order.createdAt.toLocaleString()} -{" "}
                     <span
                       className={`font-medium ${
-                        order.status === 'completed'
-                          ? 'text-green-600'
-                          : 'text-orange-500'
+                        order.status === "completed"
+                          ? "text-green-600"
+                          : "text-orange-500"
                       }`}
                     >
-                      {order.status === 'completed'
-                        ? 'Completado'
-                        : 'Pendiente'}
+                      {order.status === "completed"
+                        ? "Completado"
+                        : "Pendiente"}
                     </span>
                   </p>
                 </div>
                 <span className="text-2xl font-bold text-amber-800 mt-2 sm:mt-0">
-                  ${order.total.toFixed(2)}
+                  {formatPrice(order.total)}
                 </span>
               </div>
               <ul className="space-y-2">
                 {order.items.map((item) => (
-                  <li key={item.id} className="flex justify-between items-center">
+                  <li
+                    key={item.id}
+                    className="flex justify-between items-center"
+                  >
                     <span className="text-stone-700">
                       {item.quantity}x {item.product.name}
                     </span>
                     <span className="text-stone-600">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </li>
                 ))}
@@ -1185,22 +1199,23 @@ const StaffPanelPage: React.FC<StaffProps> = ({
                   {order.customerName}
                 </h2>
                 <p className="text-sm text-stone-500">
-                  Pedido #{order.receiptNumber} -{' '}
+                  Pedido #{order.receiptNumber} -{" "}
                   <span className="font-semibold text-blue-600">
-                    {order.orderType === 'dine-in'
-                      ? 'Para Mesa'
-                      : 'Para Llevar'}
+                    {order.orderType === "dine-in"
+                      ? "Para Mesa"
+                      : "Para Llevar"}
                   </span>
                 </p>
               </div>
               <ul className="space-y-2 flex-grow">
                 {order.items.map((item) => (
                   <li key={item.id} className="text-stone-700">
-                    <span className="font-bold">{item.quantity}x</span>{' '}
+                    <span className="font-bold">{item.quantity}x</span>{" "}
                     {item.product.name}
                     {item.selectedExtras.length > 0 && (
                       <span className="text-xs text-stone-500 block pl-5">
-                        Extras: {item.selectedExtras.map((e) => e.name).join(', ')}
+                        Extras:{" "}
+                        {item.selectedExtras.map((e) => e.name).join(", ")}
                       </span>
                     )}
                   </li>
@@ -1229,7 +1244,7 @@ const StaffPanelPage: React.FC<StaffProps> = ({
 interface ProductFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (product: Omit<Product, 'id'>, newImageFile: File | null) => void;
+  onSave: (product: Omit<Product, "id">, newImageFile: File | null) => void;
   productToEdit: Product | null;
 }
 const ProductFormModal: React.FC<ProductFormModalProps> = ({
@@ -1238,14 +1253,14 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   onSave,
   productToEdit,
 }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState('Bebidas');
+  const [category, setCategory] = useState("Bebidas");
   const [prepTime, setPrepTime] = useState(5);
   const [available, setAvailable] = useState(true);
   const [allowedExtras, setAllowedExtras] = useState<string[]>([]); // IDs de extras
-  
+
   // US-4: Manejo de imagen
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -1258,15 +1273,15 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       setCategory(productToEdit.category);
       setPrepTime(productToEdit.prepTime);
       setAvailable(productToEdit.available);
-      setAllowedExtras(productToEdit.allowedExtras.map(e => e.id));
+      setAllowedExtras(productToEdit.allowedExtras.map((e) => e.id));
       setImagePreview(productToEdit.imageUrl);
       setImageFile(null);
     } else {
       // Resetear para nuevo producto
-      setName('');
-      setDescription('');
+      setName("");
+      setDescription("");
       setPrice(0);
-      setCategory('Bebidas');
+      setCategory("Bebidas");
       setPrepTime(5);
       setAvailable(true);
       setAllowedExtras([]);
@@ -1280,7 +1295,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
     if (!imageFile) {
       // No restaurar preview si estamos editando
       if (!productToEdit) {
-         setImagePreview(null);
+        setImagePreview(null);
       }
       return;
     }
@@ -1295,19 +1310,21 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       setImageFile(e.target.files[0]);
     }
   };
-  
+
   const handleExtraToggle = (extraId: string) => {
-    setAllowedExtras(prev => 
-      prev.includes(extraId) 
-        ? prev.filter(id => id !== extraId) 
-        : [...prev, extraId]
+    setAllowedExtras((prev) =>
+      prev.includes(extraId)
+        ? prev.filter((id) => id !== extraId)
+        : [...prev, extraId],
     );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const resolvedExtras = MOCK_EXTRAS.filter(e => allowedExtras.includes(e.id));
-    
+    const resolvedExtras = MOCK_EXTRAS.filter((e) =>
+      allowedExtras.includes(e.id),
+    );
+
     onSave(
       {
         name,
@@ -1317,24 +1334,29 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
         prepTime,
         available,
         allowedExtras: resolvedExtras,
-        imageUrl: imagePreview || '', // Pasamos el preview, la lógica de App se encarga
+        imageUrl: imagePreview || "", // Pasamos el preview, la lógica de App se encarga
       },
-      imageFile
+      imageFile,
     );
     onClose();
   };
-  
-  const categories = ['Bebidas', 'Pastelería', 'Comida', 'Otros'];
+
+  const categories = ["Bebidas", "Pastelería", "Comida", "Otros"];
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={productToEdit ? 'Editar Producto' : 'Nuevo Producto'}
+      title={productToEdit ? "Editar Producto" : "Nuevo Producto"}
     >
-      <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-h-[70vh] overflow-y-auto pr-2"
+      >
         <div>
-          <label className="block text-sm font-medium text-stone-700">Nombre</label>
+          <label className="block text-sm font-medium text-stone-700">
+            Nombre
+          </label>
           <input
             type="text"
             value={name}
@@ -1343,10 +1365,12 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
             required
           />
         </div>
-        
+
         {/* US-4: Imagen (jpg) */}
         <div>
-          <label className="block text-sm font-medium text-stone-700">Imagen (JPG)</label>
+          <label className="block text-sm font-medium text-stone-700">
+            Imagen (JPG)
+          </label>
           <input
             type="file"
             accept="image/jpeg"
@@ -1354,12 +1378,18 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
             className="w-full mt-1 text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
           />
           {imagePreview && (
-            <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded-lg" />
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-2 w-32 h-32 object-cover rounded-lg"
+            />
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700">Descripción</label>
+          <label className="block text-sm font-medium text-stone-700">
+            Descripción
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -1369,7 +1399,9 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700">Precio ($)</label>
+            <label className="block text-sm font-medium text-stone-700">
+              Precio ($)
+            </label>
             <input
               type="number"
               step="0.01"
@@ -1380,20 +1412,28 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               required
             />
           </div>
-           <div>
-            <label className="block text-sm font-medium text-stone-700">Categoría</label>
+          <div>
+            <label className="block text-sm font-medium text-stone-700">
+              Categoría
+            </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full px-4 py-2 mt-1 border border-stone-300 rounded-lg bg-white"
             >
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
         </div>
-         <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700">Tiempo Prep. (min)</label>
+            <label className="block text-sm font-medium text-stone-700">
+              Tiempo Prep. (min)
+            </label>
             <input
               type="number"
               min="1"
@@ -1403,7 +1443,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               required
             />
           </div>
-           <div className="flex items-center pt-8">
+          <div className="flex items-center pt-8">
             <input
               id="available"
               type="checkbox"
@@ -1411,26 +1451,33 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
               onChange={(e) => setAvailable(e.target.checked)}
               className="w-5 h-5 text-amber-600 rounded border-stone-300 focus:ring-amber-500"
             />
-             <label htmlFor="available" className="ml-2 text-sm font-medium text-stone-700">Disponible</label>
+            <label
+              htmlFor="available"
+              className="ml-2 text-sm font-medium text-stone-700"
+            >
+              Disponible
+            </label>
           </div>
         </div>
-        
+
         {/* Selector de Extras */}
         <div>
-           <label className="block text-sm font-medium text-stone-700">Extras Permitidos</label>
-           <div className="mt-2 grid grid-cols-2 gap-2 p-3 border border-stone-200 rounded-lg max-h-32 overflow-y-auto">
-             {MOCK_EXTRAS.map(extra => (
-                <label key={extra.id} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={allowedExtras.includes(extra.id)}
-                    onChange={() => handleExtraToggle(extra.id)}
-                    className="w-4 h-4 text-amber-600 rounded border-stone-300"
-                  />
-                  <span className="text-sm text-stone-600">{extra.name}</span>
-                </label>
-             ))}
-           </div>
+          <label className="block text-sm font-medium text-stone-700">
+            Extras Permitidos
+          </label>
+          <div className="mt-2 grid grid-cols-2 gap-2 p-3 border border-stone-200 rounded-lg max-h-32 overflow-y-auto">
+            {MOCK_EXTRAS.map((extra) => (
+              <label key={extra.id} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={allowedExtras.includes(extra.id)}
+                  onChange={() => handleExtraToggle(extra.id)}
+                  className="w-4 h-4 text-amber-600 rounded border-stone-300"
+                />
+                <span className="text-sm text-stone-600">{extra.name}</span>
+              </label>
+            ))}
+          </div>
         </div>
 
         <div className="pt-4 flex justify-end gap-3">
@@ -1458,11 +1505,22 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
  */
 interface AdminProductsProps {
   products: Product[];
-  onSaveProduct: (product: Omit<Product, 'id'>, newImageFile: File | null) => void;
-  onUpdateProduct: (productId: string, productData: Omit<Product, 'id'>, newImageFile: File | null) => void;
+  onSaveProduct: (
+    product: Omit<Product, "id">,
+    newImageFile: File | null,
+  ) => void;
+  onUpdateProduct: (
+    productId: string,
+    productData: Omit<Product, "id">,
+    newImageFile: File | null,
+  ) => void;
   // TODO: Agregar onDelete
 }
-const AdminProductsPage: React.FC<AdminProductsProps> = ({ products, onSaveProduct, onUpdateProduct }) => {
+const AdminProductsPage: React.FC<AdminProductsProps> = ({
+  products,
+  onSaveProduct,
+  onUpdateProduct,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
@@ -1470,13 +1528,16 @@ const AdminProductsPage: React.FC<AdminProductsProps> = ({ products, onSaveProdu
     setProductToEdit(null);
     setIsModalOpen(true);
   };
-  
+
   const handleOpenEditModal = (product: Product) => {
     setProductToEdit(product);
     setIsModalOpen(true);
   };
-  
-  const handleSave = (productData: Omit<Product, 'id'>, newImageFile: File | null) => {
+
+  const handleSave = (
+    productData: Omit<Product, "id">,
+    newImageFile: File | null,
+  ) => {
     if (productToEdit) {
       onUpdateProduct(productToEdit.id, productData, newImageFile);
     } else {
@@ -1505,31 +1566,53 @@ const AdminProductsPage: React.FC<AdminProductsProps> = ({ products, onSaveProdu
           <table className="w-full min-w-max">
             <thead className="bg-stone-50">
               <tr>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Imagen</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Nombre</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Precio</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Estado</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Acciones</th>
+                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                  Imagen
+                </th>
+                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                  Nombre
+                </th>
+                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                  Precio
+                </th>
+                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                  Estado
+                </th>
+                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-200">
-              {products.map(product => (
+              {products.map((product) => (
                 <tr key={product.id}>
                   <td className="p-4">
-                    <img src={product.imageUrl} alt={product.name} className="w-16 h-16 object-cover rounded-lg" />
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
                   </td>
                   <td className="p-4">
-                    <span className="font-medium text-stone-800">{product.name}</span>
-                    <span className="block text-sm text-stone-500">{product.category}</span>
+                    <span className="font-medium text-stone-800">
+                      {product.name}
+                    </span>
+                    <span className="block text-sm text-stone-500">
+                      {product.category}
+                    </span>
                   </td>
-                  <td className="p-4 font-medium text-stone-800">${product.price.toFixed(2)}</td>
+                  <td className="p-4 font-medium text-stone-800">
+                    {formatPrice(product.price)}
+                  </td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      product.available 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {product.available ? 'Disponible' : 'No Disponible'}
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        product.available
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {product.available ? "Disponible" : "No Disponible"}
                     </span>
                   </td>
                   <td className="p-4">
@@ -1550,8 +1633,8 @@ const AdminProductsPage: React.FC<AdminProductsProps> = ({ products, onSaveProdu
           </table>
         </div>
       </div>
-      
-      <ProductFormModal 
+
+      <ProductFormModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
@@ -1566,16 +1649,15 @@ const AdminProductsPage: React.FC<AdminProductsProps> = ({ products, onSaveProdu
  * (Cubre "registro de pedidos y pagos realizados" de la lista inicial)
  */
 interface AdminDashboardProps {
-   orders: Order[];
+  orders: Order[];
 }
 const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
-
   const totalSales = useMemo(() => {
     return orders.reduce((sum, order) => sum + order.total, 0);
   }, [orders]);
-  
+
   const completedOrders = useMemo(() => {
-    return orders.filter(o => o.status === 'completed');
+    return orders.filter((o) => o.status === "completed");
   }, [orders]);
 
   return (
@@ -1583,71 +1665,105 @@ const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
       <h1 className="text-4xl font-bold text-amber-950 mb-8">
         Panel de Administración
       </h1>
-      
+
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-         <div className="p-6 bg-white rounded-2xl shadow-lg">
-           <h3 className="text-sm font-semibold text-stone-500 uppercase">Ventas Totales</h3>
-           <p className="text-4xl font-bold text-amber-950 mt-2">${totalSales.toFixed(2)}</p>
-         </div>
-         <div className="p-6 bg-white rounded-2xl shadow-lg">
-           <h3 className="text-sm font-semibold text-stone-500 uppercase">Pedidos Totales</h3>
-           <p className="text-4xl font-bold text-amber-950 mt-2">{orders.length}</p>
-         </div>
-         <div className="p-6 bg-white rounded-2xl shadow-lg">
-           <h3 className="text-sm font-semibold text-stone-500 uppercase">Pedidos Completados</h3>
-           <p className="text-4xl font-bold text-amber-950 mt-2">{completedOrders.length}</p>
-         </div>
+        <div className="p-6 bg-white rounded-2xl shadow-lg">
+          <h3 className="text-sm font-semibold text-stone-500 uppercase">
+            Ventas Totales
+          </h3>
+          <p className="text-4xl font-bold text-amber-950 mt-2">
+            ${totalSales.toFixed(2)}
+          </p>
+        </div>
+        <div className="p-6 bg-white rounded-2xl shadow-lg">
+          <h3 className="text-sm font-semibold text-stone-500 uppercase">
+            Pedidos Totales
+          </h3>
+          <p className="text-4xl font-bold text-amber-950 mt-2">
+            {orders.length}
+          </p>
+        </div>
+        <div className="p-6 bg-white rounded-2xl shadow-lg">
+          <h3 className="text-sm font-semibold text-stone-500 uppercase">
+            Pedidos Completados
+          </h3>
+          <p className="text-4xl font-bold text-amber-950 mt-2">
+            {completedOrders.length}
+          </p>
+        </div>
       </div>
-      
+
       {/* "Registro de pedidos y pagos realizados" */}
-       <h2 className="text-2xl font-semibold text-amber-950 mb-4">
+      <h2 className="text-2xl font-semibold text-amber-950 mb-4">
         Registro de Pagos y Pedidos
       </h2>
-       <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
-          <table className="w-full min-w-max">
-            <thead className="bg-stone-50">
-              <tr>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Comprobante</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Cliente</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Fecha</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Total</th>
-                <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">Estado</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-200">
-              {/* Mostrar últimos 20 pedidos */}
-              {[...orders].reverse().slice(0, 20).map(order => (
+      <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
+        <table className="w-full min-w-max">
+          <thead className="bg-stone-50">
+            <tr>
+              <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                Comprobante
+              </th>
+              <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                Cliente
+              </th>
+              <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                Fecha
+              </th>
+              <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                Total
+              </th>
+              <th className="p-4 text-left text-xs font-semibold text-stone-500 uppercase">
+                Estado
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-stone-200">
+            {/* Mostrar últimos 20 pedidos */}
+            {[...orders]
+              .reverse()
+              .slice(0, 20)
+              .map((order) => (
                 <tr key={order.id}>
-                  <td className="p-4 font-medium text-amber-700">#{order.receiptNumber}</td>
+                  <td className="p-4 font-medium text-amber-700">
+                    #{order.receiptNumber}
+                  </td>
                   <td className="p-4 text-stone-800">{order.customerName}</td>
-                  <td className="p-4 text-stone-600">{order.createdAt.toLocaleDateString()}</td>
-                  <td className="p-4 font-medium text-stone-800">${order.total.toFixed(2)}</td>
+                  <td className="p-4 text-stone-600">
+                    {order.createdAt.toLocaleDateString()}
+                  </td>
+                  <td className="p-4 font-medium text-stone-800">
+                    ${order.total.toFixed(2)}
+                  </td>
                   <td className="p-4">
-                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      order.status === 'completed' 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-orange-100 text-orange-700'
-                    }`}>
-                      {order.status === 'completed' ? 'Completado' : 'Pendiente'}
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.status === "completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {order.status === "completed"
+                        ? "Completado"
+                        : "Pendiente"}
                     </span>
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
-
 
 // --- 6. COMPONENTE PRINCIPAL (App) ---
 
 export default function App() {
   // --- Estado Global de la App ---
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentPage, setCurrentPage] = useState<Page>('login');
+  const [currentPage, setCurrentPage] = useState<Page>("login");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [notification, setNotification] = useState<Notification>(null);
 
@@ -1668,11 +1784,11 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [notification]);
-  
+
   // --- Funciones de Notificación ---
   const showNotification = (
     message: string,
-    type: 'success' | 'error' | 'info'
+    type: "success" | "error" | "info",
   ) => {
     setNotification({ message, type });
   };
@@ -1683,20 +1799,20 @@ export default function App() {
     if (user) {
       setCurrentUser(user);
       // Redirigir según rol
-      if (user.role === 'client') setCurrentPage('menu');
-      if (user.role === 'staff') setCurrentPage('staffPanel');
-      if (user.role === 'admin') setCurrentPage('adminPanel');
+      if (user.role === "client") setCurrentPage("menu");
+      if (user.role === "staff") setCurrentPage("staffPanel");
+      if (user.role === "admin") setCurrentPage("adminPanel");
       setLoginError(null);
-      showNotification(`¡Bienvenido, ${user.name}!`, 'success');
+      showNotification(`¡Bienvenido, ${user.name}!`, "success");
     } else {
       // "Done": Mensaje de error en login
-      setLoginError('Usuario o contraseña incorrectos.');
+      setLoginError("Usuario o contraseña incorrectos.");
     }
   };
 
   const handleRegister = (name: string, email: string, pass: string) => {
-    if (users.find(u => u.email === email)) {
-      setLoginError('El email ya está registrado.');
+    if (users.find((u) => u.email === email)) {
+      setLoginError("El email ya está registrado.");
       return;
     }
     const newUser: User = {
@@ -1704,34 +1820,38 @@ export default function App() {
       name,
       email,
       password: pass,
-      role: 'client'
+      role: "client",
     };
-    setUsers(prev => [...prev, newUser]);
+    setUsers((prev) => [...prev, newUser]);
     setCurrentUser(newUser);
-    setCurrentPage('menu');
+    setCurrentPage("menu");
     setLoginError(null);
-    showNotification(`¡Registro exitoso, ${name}!`, 'success');
+    showNotification(`¡Registro exitoso, ${name}!`, "success");
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setCurrentPage('login');
+    setCurrentPage("login");
     setCart([]); // Limpiar carrito al salir
-    showNotification('Sesión cerrada exitosamente.', 'info');
+    showNotification("Sesión cerrada exitosamente.", "info");
   };
 
   const handleNavigate = (page: Page) => {
     // Proteger rutas
     if (!currentUser) {
-      setCurrentPage('login');
+      setCurrentPage("login");
       return;
     }
-    
+
     // Restricciones de rol
-    if (page.startsWith('admin') && currentUser.role !== 'admin') return;
-    if (page.startsWith('staff') && currentUser.role !== 'staff') return;
-    if ((page === 'menu' || page === 'cart' || page === 'history') && currentUser.role !== 'client') return;
-    
+    if (page.startsWith("admin") && currentUser.role !== "admin") return;
+    if (page.startsWith("staff") && currentUser.role !== "staff") return;
+    if (
+      (page === "menu" || page === "cart" || page === "history") &&
+      currentUser.role !== "client"
+    )
+      return;
+
     setCurrentPage(page);
   };
 
@@ -1739,16 +1859,16 @@ export default function App() {
   const handleAddToCart = (
     product: Product,
     quantity: number,
-    selectedExtras: Extra[]
+    selectedExtras: Extra[],
   ) => {
     // US-2: "Puedo armar más de un pedido en simultaneo"
     // (Esto se maneja permitiendo múltiples items. Si el item es idéntico, lo agrupamos)
-    
+
     const existingItemIndex = cart.findIndex(
       (item) =>
         item.product.id === product.id &&
-        JSON.stringify(item.selectedExtras.map(e => e.id).sort()) === 
-        JSON.stringify(selectedExtras.map(e => e.id).sort())
+        JSON.stringify(item.selectedExtras.map((e) => e.id).sort()) ===
+          JSON.stringify(selectedExtras.map((e) => e.id).sort()),
     );
 
     if (existingItemIndex > -1) {
@@ -1768,19 +1888,22 @@ export default function App() {
     }
     showNotification(
       `${quantity}x ${product.name} agregado al carrito.`,
-      'success'
+      "success",
     );
   };
 
-  const handleUpdateCartQuantity = (cartItemId: string, newQuantity: number) => {
+  const handleUpdateCartQuantity = (
+    cartItemId: string,
+    newQuantity: number,
+  ) => {
     if (newQuantity < 1) {
       // Si la cantidad es 0 o menos, eliminar
       handleRemoveFromCart(cartItemId);
     } else {
       setCart((prevCart) =>
         prevCart.map((item) =>
-          item.id === cartItemId ? { ...item, quantity: newQuantity } : item
-        )
+          item.id === cartItemId ? { ...item, quantity: newQuantity } : item,
+        ),
       );
     }
   };
@@ -1793,7 +1916,7 @@ export default function App() {
   const handlePlaceOrder = (orderType: OrderType) => {
     // "Done": No permitir pedido vacío
     if (cart.length === 0 || !currentUser) {
-      showNotification('Tu carrito está vacío.', 'error');
+      showNotification("Tu carrito está vacío.", "error");
       return;
     }
 
@@ -1801,7 +1924,7 @@ export default function App() {
       const extrasTotal = item.selectedExtras.reduce((s, e) => s + e.price, 0);
       return sum + (item.product.price + extrasTotal) * item.quantity;
     }, 0);
-    
+
     const receipt = Date.now().toString().slice(-6); // Comprobante digital
 
     const newOrder: Order = {
@@ -1810,40 +1933,42 @@ export default function App() {
       customerName: currentUser.name,
       items: [...cart],
       total,
-      status: 'pending', // US-3: Llega como pendiente
+      status: "pending", // US-3: Llega como pendiente
       orderType,
       createdAt: new Date(),
-      receiptNumber: receipt // "Done"
+      receiptNumber: receipt, // "Done"
     };
 
     setOrders((prevOrders) => [...prevOrders, newOrder]);
     setCart([]); // Limpiar carrito
-    
+
     // US-2: Mensaje de confirmación
     showNotification(
       `¡Pedido #${receipt} confirmado! Recibirás tu comprobante.`,
-      'success'
+      "success",
     );
-    setCurrentPage('history'); // Llevar al historial
+    setCurrentPage("history"); // Llevar al historial
   };
 
   // US-3: Lógica del Personal
   const handleMarkOrderCompleted = (orderId: string) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
-        order.id === orderId ? { ...order, status: 'completed' } : order
-      )
+        order.id === orderId ? { ...order, status: "completed" } : order,
+      ),
     );
-    showNotification(`Pedido #${orders.find(o=>o.id === orderId)?.receiptNumber} completado.`, 'info');
+    showNotification(
+      `Pedido #${orders.find((o) => o.id === orderId)?.receiptNumber} completado.`,
+      "info",
+    );
   };
 
   // --- Lógica de Admin (US-4) ---
   const handleSaveProduct = (
-    productData: Omit<Product, 'id'>, 
-    newImageFile: File | null
+    productData: Omit<Product, "id">,
+    newImageFile: File | null,
   ) => {
-    
-    let imageUrl = 'https://placehold.co/600x400/CCCCCC/FFF?text=Nuevo';
+    let imageUrl = "https://placehold.co/600x400/CCCCCC/FFF?text=Nuevo";
     if (newImageFile) {
       // Simulación de subida: usamos la URL local temporal
       imageUrl = URL.createObjectURL(newImageFile);
@@ -1851,24 +1976,23 @@ export default function App() {
       // Para una simulación más persistente, podríamos leer el archivo
       // como Base64, pero createObjectURL es más simple para el MVP.
     }
-    
+
     const newProduct: Product = {
       ...productData,
       id: `p${Date.now()}`,
       imageUrl,
     };
-    setProducts(prev => [newProduct, ...prev]);
-    showNotification(`Producto "${newProduct.name}" creado.`, 'success');
+    setProducts((prev) => [newProduct, ...prev]);
+    showNotification(`Producto "${newProduct.name}" creado.`, "success");
   };
-  
+
   const handleUpdateProduct = (
-    productId: string, 
-    productData: Omit<Product, 'id'>, 
-    newImageFile: File | null
+    productId: string,
+    productData: Omit<Product, "id">,
+    newImageFile: File | null,
   ) => {
-    
-    setProducts(prev => 
-      prev.map(p => {
+    setProducts((prev) =>
+      prev.map((p) => {
         if (p.id === productId) {
           let imageUrl = p.imageUrl; // Mantener la original
           if (newImageFile) {
@@ -1876,7 +2000,7 @@ export default function App() {
           } else if (productData.imageUrl) {
             imageUrl = productData.imageUrl; // Usar la URL (si se pasó desde el form)
           }
-          
+
           return {
             ...p,
             ...productData,
@@ -1885,19 +2009,19 @@ export default function App() {
           };
         }
         return p;
-      })
+      }),
     );
-    showNotification(`Producto "${productData.name}" actualizado.`, 'success');
+    showNotification(`Producto "${productData.name}" actualizado.`, "success");
   };
 
   // --- Cálculos Derivados (Memos) ---
   const cartItemCount = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
   }, [cart]);
-  
+
   const pendingOrders = useMemo(() => {
     return orders
-      .filter(o => o.status === 'pending')
+      .filter((o) => o.status === "pending")
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }, [orders]);
 
@@ -1905,20 +2029,32 @@ export default function App() {
   const renderPage = () => {
     if (!currentUser) {
       switch (currentPage) {
-        case 'register':
-          return <RegisterPage onRegister={handleRegister} onNavigate={handleNavigate} error={loginError} />;
-        case 'login':
+        case "register":
+          return (
+            <RegisterPage
+              onRegister={handleRegister}
+              onNavigate={handleNavigate}
+              error={loginError}
+            />
+          );
+        case "login":
         default:
-          return <LoginPage onLogin={handleLogin} onNavigate={handleNavigate} error={loginError} />;
+          return (
+            <LoginPage
+              onLogin={handleLogin}
+              onNavigate={handleNavigate}
+              error={loginError}
+            />
+          );
       }
     }
 
     // Vistas del usuario logueado
     switch (currentPage) {
       // Cliente
-      case 'menu':
+      case "menu":
         return <MenuPage products={products} onAddToCart={handleAddToCart} />;
-      case 'cart':
+      case "cart":
         return (
           <CartPage
             cart={cart}
@@ -1927,29 +2063,52 @@ export default function App() {
             onPlaceOrder={handlePlaceOrder}
           />
         );
-      case 'history':
-        return <OrderHistoryPage orders={orders} currentUserId={currentUser.id} />;
-      
+      case "history":
+        return (
+          <OrderHistoryPage orders={orders} currentUserId={currentUser.id} />
+        );
+
       // Personal
-      case 'staffPanel':
-        return <StaffPanelPage pendingOrders={pendingOrders} onMarkCompleted={handleMarkOrderCompleted} />;
-        
+      case "staffPanel":
+        return (
+          <StaffPanelPage
+            pendingOrders={pendingOrders}
+            onMarkCompleted={handleMarkOrderCompleted}
+          />
+        );
+
       // Admin
-      case 'adminPanel':
+      case "adminPanel":
         return <AdminPanelPage orders={orders} />;
-      case 'adminProducts':
-        return <AdminProductsPage 
-                  products={products} 
-                  onSaveProduct={handleSaveProduct} 
-                  onUpdateProduct={handleUpdateProduct} 
-                />;
-        
+      case "adminProducts":
+        return (
+          <AdminProductsPage
+            products={products}
+            onSaveProduct={handleSaveProduct}
+            onUpdateProduct={handleUpdateProduct}
+          />
+        );
+
       // Default (redirigir a la página principal del rol)
       default:
-        if (currentUser.role === 'client') return <MenuPage products={products} onAddToCart={handleAddToCart} />;
-        if (currentUser.role === 'staff') return <StaffPanelPage pendingOrders={pendingOrders} onMarkCompleted={handleMarkOrderCompleted} />;
-        if (currentUser.role === 'admin') return <AdminPanelPage orders={orders} />;
-        return <LoginPage onLogin={handleLogin} onNavigate={handleNavigate} error={loginError} />;
+        if (currentUser.role === "client")
+          return <MenuPage products={products} onAddToCart={handleAddToCart} />;
+        if (currentUser.role === "staff")
+          return (
+            <StaffPanelPage
+              pendingOrders={pendingOrders}
+              onMarkCompleted={handleMarkOrderCompleted}
+            />
+          );
+        if (currentUser.role === "admin")
+          return <AdminPanelPage orders={orders} />;
+        return (
+          <LoginPage
+            onLogin={handleLogin}
+            onNavigate={handleNavigate}
+            error={loginError}
+          />
+        );
     }
   };
 
@@ -1961,9 +2120,7 @@ export default function App() {
         onNavigate={handleNavigate}
         onLogout={handleLogout}
       />
-      <main>
-        {renderPage()}
-      </main>
+      <main>{renderPage()}</main>
       <NotificationDisplay notification={notification} />
     </div>
   );
