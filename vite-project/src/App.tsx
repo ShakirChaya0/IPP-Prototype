@@ -41,7 +41,7 @@ type Order = {
   customerName: string;
   items: CartItem[];
   total: number;
-  status: "pending" | "completed"; // Para el panel de personal (US-3)
+  status: "pending" | "completed" | "in-progress";
   orderType: OrderType;
   createdAt: Date;
   receiptNumber: string; // Comprobante digital ("Done")
@@ -151,21 +151,21 @@ const MOCK_USERS: User[] = [
     id: "u1",
     email: "cliente@mail.com",
     password: "123",
-    name: "Juan Cliente",
+    name: "Aldo Brozzo",
     role: "client",
   },
   {
     id: "u2",
     email: "personal@mail.com",
     password: "123",
-    name: "Ana Personal",
+    name: "Micaela",
     role: "staff",
   },
   {
     id: "u3",
     email: "admin@mail.com",
     password: "123",
-    name: "Gerente Admin",
+    name: "Gerente",
     role: "admin",
   },
 ];
@@ -223,6 +223,21 @@ const IconArchive = () => (
   <Icon path="m21 8-1.4-4.2c-.1-.5-.6-.8-1.1-.8H5.5c-.5 0-1 .3-1.1.8L3 8m18 0H3v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" />
 );
 const IconCheck = () => <Icon path="M20 6 9 17l-5-5" />;
+const IconClock = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-full h-full"
+  >
+    <path
+      fillRule="evenodd"
+      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
 const IconDollarSign = () => (
   <Icon path="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
 );
@@ -1124,7 +1139,9 @@ const OrderHistoryPage: React.FC<HistoryProps> = ({
                     >
                       {order.status === "completed"
                         ? "Completado"
-                        : "Pendiente"}
+                        : order.status === "in-progress"
+                          ? "En preparación"
+                          : "Pendiente"}
                     </span>
                   </p>
                 </div>
@@ -1165,10 +1182,13 @@ const OrderHistoryPage: React.FC<HistoryProps> = ({
 interface StaffProps {
   pendingOrders: Order[];
   onMarkCompleted: (orderId: string) => void;
+  onMarkInProgress: (orderId: string) => void;
 }
+
 const StaffPanelPage: React.FC<StaffProps> = ({
   pendingOrders,
   onMarkCompleted,
+  onMarkInProgress,
 }) => {
   return (
     <div className="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
@@ -1191,7 +1211,12 @@ const StaffPanelPage: React.FC<StaffProps> = ({
           {pendingOrders.map((order) => (
             <div
               key={order.id}
-              className="flex flex-col p-6 bg-white rounded-2xl shadow-lg"
+              // Cambia el estilo del borde según el estado para una mejor visualización
+              className={`flex flex-col p-6 bg-white rounded-2xl shadow-lg border-t-4 ${
+                order.status === "in-progress"
+                  ? "border-amber-500"
+                  : "border-stone-200"
+              }`}
             >
               {/* US-3: Nombre del cliente y pedido */}
               <div className="pb-4 mb-4 border-b border-stone-200">
@@ -1221,15 +1246,31 @@ const StaffPanelPage: React.FC<StaffProps> = ({
                   </li>
                 ))}
               </ul>
-              <button
-                onClick={() => onMarkCompleted(order.id)}
-                className="w-full mt-6 py-3 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition-colors"
-              >
-                <div className="inline-block w-5 h-5 mr-2">
-                  <IconCheck />
-                </div>
-                Marcar como Completado
-              </button>
+
+              {/* Lógica condicional para los botones */}
+              {order.status === "pending" ? (
+                // Botón para pasar a "En preparación"
+                <button
+                  onClick={() => onMarkInProgress(order.id)}
+                  className="w-full mt-6 py-3 font-semibold text-white bg-amber-500 rounded-lg shadow-md hover:bg-amber-600 transition-colors flex items-center justify-center"
+                >
+                  <div className="inline-block w-5 h-5 mr-2">
+                    <IconClock />
+                  </div>
+                  Marcar como En Preparación
+                </button>
+              ) : (
+                // Botón para pasar a "Completado" (solo visible si está 'in-progress')
+                <button
+                  onClick={() => onMarkCompleted(order.id)}
+                  className="w-full mt-6 py-3 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition-colors flex items-center justify-center"
+                >
+                  <div className="inline-block w-5 h-5 mr-2">
+                    <IconCheck />
+                  </div>
+                  Marcar como Completado
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -1673,7 +1714,7 @@ const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
             Ventas Totales
           </h3>
           <p className="text-4xl font-bold text-amber-950 mt-2">
-            ${totalSales.toFixed(2)}
+            {formatPrice(totalSales)}
           </p>
         </div>
         <div className="p-6 bg-white rounded-2xl shadow-lg">
@@ -1734,7 +1775,7 @@ const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
                     {order.createdAt.toLocaleDateString()}
                   </td>
                   <td className="p-4 font-medium text-stone-800">
-                    ${order.total.toFixed(2)}
+                    {formatPrice(order.total)}
                   </td>
                   <td className="p-4">
                     <span
@@ -1746,7 +1787,9 @@ const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
                     >
                       {order.status === "completed"
                         ? "Completado"
-                        : "Pendiente"}
+                        : order.status === "in-progress"
+                          ? "En preparación"
+                          : "Pendiente"}
                     </span>
                   </td>
                 </tr>
@@ -1950,7 +1993,20 @@ export default function App() {
     setCurrentPage("history"); // Llevar al historial
   };
 
-  // US-3: Lógica del Personal
+  const handleMarkOrderInProgress = (orderId: string) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId ? { ...order, status: "in-progress" } : order,
+      ),
+    );
+    showNotification(
+      `Pedido #${
+        orders.find((o) => o.id === orderId)?.receiptNumber
+      } ha comenzado la preparación.`,
+      "info",
+    );
+  };
+
   const handleMarkOrderCompleted = (orderId: string) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
@@ -1958,8 +2014,10 @@ export default function App() {
       ),
     );
     showNotification(
-      `Pedido #${orders.find((o) => o.id === orderId)?.receiptNumber} completado.`,
-      "info",
+      `Pedido #${
+        orders.find((o) => o.id === orderId)?.receiptNumber
+      } completado.`,
+      "success", // Cambiado a 'success' ya que es el final del ciclo
     );
   };
 
@@ -2021,7 +2079,7 @@ export default function App() {
 
   const pendingOrders = useMemo(() => {
     return orders
-      .filter((o) => o.status === "pending")
+      .filter((o) => o.status === "pending" || o.status === "in-progress")
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }, [orders]);
 
@@ -2074,6 +2132,7 @@ export default function App() {
           <StaffPanelPage
             pendingOrders={pendingOrders}
             onMarkCompleted={handleMarkOrderCompleted}
+            onMarkInProgress={handleMarkOrderInProgress}
           />
         );
 
@@ -2098,6 +2157,7 @@ export default function App() {
             <StaffPanelPage
               pendingOrders={pendingOrders}
               onMarkCompleted={handleMarkOrderCompleted}
+              onMarkInProgress={handleMarkOrderInProgress}
             />
           );
         if (currentUser.role === "admin")
