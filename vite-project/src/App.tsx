@@ -1603,7 +1603,7 @@ const AdminProductsPage: React.FC<AdminProductsProps> = ({
         </div>
 
         {/* Tabla de Productos */}
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
+        <div style={{"overflow-x": "auto"}} className="bg-white shadow-lg rounded-2xl overflow-hidden">
           <table className="w-full min-w-max">
             <thead className="bg-stone-50">
               <tr>
@@ -1739,7 +1739,7 @@ const AdminPanelPage: React.FC<AdminDashboardProps> = ({ orders }) => {
       <h2 className="text-2xl font-semibold text-amber-950 mb-4">
         Registro de Pagos y Pedidos
       </h2>
-      <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
+      <div style={{"overflow-x": "auto"}} className="bg-white shadow-lg rounded-2xl overflow-hidden">
         <table className="w-full min-w-max">
           <thead className="bg-stone-50">
             <tr>
